@@ -1,2 +1,2 @@
 # IN4200
-Deep Learning for Image Analysis subject repository
+High Performance Computing at the University of Oslo public subject repository
