@@ -27,8 +27,13 @@ int main(int argc, char *argv[])
 	// Test all the modules to assert whether or not they are in order.
 	if (tbool) {
 		printf("Testing...\n");
+
 		_test_read_graph_from_file1();
 		_test_read_graph_from_file2();
+
+		_test_count_mutual_links1();
+		// _test_count_mutual_links2();
+
 		printf("Function test complete.\n");
 	}
 

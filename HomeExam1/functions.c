@@ -194,10 +194,10 @@ int count_mutual_links1(int N, char **table2D, int *num_involvements)
 				{
 					if (table2D[i][rowind] == 1)
 					{
-						total_links += 1;
+						total_links++;
 					}
 				}
-				total_links -= 1; // remove the link from column j.
+				total_links--; // remove the link from column j.
 			}
 		}
 	}
@@ -211,5 +211,10 @@ int count_mutual_links1(int N, char **table2D, int *num_involvements)
 
 int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements)
 {
+	/* Count the mutual links using the row_ptr and col_idx array */
+	int total_links = 0;
 
+	
+
+	return total_links;
 } // count_mutual_links2

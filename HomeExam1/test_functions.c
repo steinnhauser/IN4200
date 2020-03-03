@@ -41,7 +41,7 @@ void _test_read_graph_from_file1()
       }
     }
   }
-  printf("Test read_graph_from_file1 passed with %d errors.\n", errno);
+  printf("Test read_graph_from_file1 passed with \t %d errors.\n", errno);
 }
 
 void _test_read_graph_from_file2()
@@ -95,10 +95,10 @@ void _test_read_graph_from_file2()
       }
     }
   }
-  printf("Test read_graph_from_file2 passed with %d errors.\n", errno);
+  printf("Test read_graph_from_file2 passed with \t %d errors.\n", errno);
 }
 
-int _test_count_mutual_links1()
+void _test_count_mutual_links1()
 {
 	/* Function to count the total number of mutual webpage linkage occurrences,
 	as well as the number of involvements per webpage as outbound for such
@@ -133,9 +133,20 @@ int _test_count_mutual_links1()
   };
   int trueTotal_links = 26;
 
+  char **table2D;
+  table2D = (int**) malloc(N * sizeof(int*));
+  for (int i = 0; i < N; i++)
+  {
+    table2D[i] = (int*) malloc(N * sizeof(int));
+    for (int j = 0; j < N; j++)
+    {
+      table2D[i][j] = trueMtx[i][j];
+    }
+  }
 
   // Check that these links are equal.
-  total_links = count_mutual_links1(N, trueMtx, &num_involvements);
+  total_links = count_mutual_links1(N, table2D, &num_involvements);
+
   if (total_links != trueTotal_links)
   {
     errno++;
@@ -145,10 +156,10 @@ int _test_count_mutual_links1()
 	In addition, the array num_involvements is assumed to already be allocated
 	and of length N. Should contain the number of involvements per webpage
 	when the functions are complete. */
-  printf("Test count_mutual_links1 passed with %d errors.\n", errno);
+  printf("Test count_mutual_links1 passed with \t %d errors.\n", errno);
 } // _test_count_mutual_links1
 
-int _test_count_mutual_links2()
+void _test_count_mutual_links2()
 {
   /**/
   // int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements
