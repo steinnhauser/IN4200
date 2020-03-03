@@ -71,7 +71,7 @@ void _test_read_graph_from_file2()
   filename = "data/testingdata.txt";
   read_graph_from_file2(filename, &N, &N_links, &row_ptr, &col_idx);
 
-  // Assert the similarities between the two matrices:
+  // Assert the similarities between the two arrays:
   if (trueN != N)
   {
     printf("N was extracted incorrectly in function read_graph_from_file1\n");
@@ -82,6 +82,7 @@ void _test_read_graph_from_file2()
     {
       if (trueRow_ptr[i] != row_ptr[i])
       {
+        printf("ROW: True: %d, got: %d at idx: %d\n",trueRow_ptr[i], row_ptr[i], i);
         errno++;
       }
     }
@@ -89,6 +90,7 @@ void _test_read_graph_from_file2()
     {
       if (trueCol_idx[j] != col_idx[j])
       {
+        printf("COL: True: %d, got: %d at idx: %d\n",trueCol_idx[j], col_idx[j], j);
         errno++;
       }
     }
@@ -96,23 +98,62 @@ void _test_read_graph_from_file2()
   printf("Test read_graph_from_file2 passed with %d errors.\n", errno);
 }
 
-int _test_count_mutual_links1(int N, char **table2D, int *num_involvements)
+int _test_count_mutual_links1()
 {
 	/* Function to count the total number of mutual webpage linkage occurrences,
 	as well as the number of involvements per webpage as outbound for such
 	mutual linkage occurrences.*/
 
-	// Mutual webpage linkages to '4' is a measurement of how many times 4 shows up in the ToID table.
-  count_mutual_links1(int N, char **table2D, int *num_involvements);
+  /* Correct values for the table in Figure 1, listed by
+  grouping together the {node, mutual_links} values */
+  int errno = 0;
+  int total_links;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+
+  int N = 8;
+  int num_involvements;
+  int trueMtx[8][8] = {
+    {0, 0, 0, 0, 0, 0, 1, 0},
+    {1, 0, 1, 1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, 0, 0, 1, 0},
+    {0, 0, 0, 1, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 1, 1, 0},
+  };
+  int trueTotal_links = 26;
+
+
+  // Check that these links are equal.
+  total_links = count_mutual_links1(N, trueMtx, &num_involvements);
+  if (total_links != trueTotal_links)
+  {
+    errno++;
+  }
+
 	/* Should return the total number of mutual webpage linkage occurences.
 	In addition, the array num_involvements is assumed to already be allocated
 	and of length N. Should contain the number of involvements per webpage
 	when the functions are complete. */
+  printf("Test count_mutual_links1 passed with %d errors.\n", errno);
 } // _test_count_mutual_links1
 
-int _test_count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements)
+int _test_count_mutual_links2()
 {
   /**/
-  int i = 0;
-  count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements);
+  // int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements
+  int errno = 0;
+  // int *num_involvements;  // know this value
+  // count_mutual_links2(N, N_links, *row_ptr, *col_idx, num_involvements);
+  printf("Test count_mutual_links2 passed with %d errors.\n", errno);
 } // _test_count_mutual_links2
