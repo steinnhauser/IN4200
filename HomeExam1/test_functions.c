@@ -82,7 +82,6 @@ void _test_read_graph_from_file2()
     {
       if (trueRow_ptr[i] != row_ptr[i])
       {
-        printf("ROW: True: %d, got: %d at idx: %d\n",trueRow_ptr[i], row_ptr[i], i);
         errno++;
       }
     }
@@ -90,7 +89,6 @@ void _test_read_graph_from_file2()
     {
       if (trueCol_idx[j] != col_idx[j])
       {
-        printf("COL: True: %d, got: %d at idx: %d\n",trueCol_idx[j], col_idx[j], j);
         errno++;
       }
     }
@@ -120,7 +118,8 @@ void _test_count_mutual_links1()
   };
 
   int N = 8;
-  int num_involvements;
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
   int trueMtx[8][8] = {
     {0, 0, 0, 0, 0, 0, 1, 0},
     {1, 0, 1, 1, 0, 0, 0, 0},
@@ -145,11 +144,21 @@ void _test_count_mutual_links1()
   }
 
   // Check that these links are equal.
-  total_links = count_mutual_links1(N, table2D, &num_involvements);
+  total_links = count_mutual_links1(N, table2D, num_involvements);
 
+  // Check the total links value
   if (total_links != trueTotal_links)
   {
     errno++;
+  }
+
+  // Check the num_involvements values
+  for (int i = 0; i < N; i++)
+  {
+    if (correctVals[i][1] != num_involvements[i])
+    {
+      errno++;
+    }
   }
 
 	/* Should return the total number of mutual webpage linkage occurences.
@@ -161,10 +170,36 @@ void _test_count_mutual_links1()
 
 void _test_count_mutual_links2()
 {
-  /**/
   // int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements
   int errno = 0;
+  int total_links;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+
+  int N = 8;
+  int num_involvements;
+  int trueMtx[8][8] = {
+    {0, 0, 0, 0, 0, 0, 1, 0},
+    {1, 0, 1, 1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, 0, 0, 1, 0},
+    {0, 0, 0, 1, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 1, 1, 0},
+  };
+  int trueTotal_links = 26;
+
+
   // int *num_involvements;  // know this value
   // count_mutual_links2(N, N_links, *row_ptr, *col_idx, num_involvements);
-  printf("Test count_mutual_links2 passed with %d errors.\n", errno);
+  printf("Test count_mutual_links2 passed with \t %d errors.\n", errno);
 } // _test_count_mutual_links2

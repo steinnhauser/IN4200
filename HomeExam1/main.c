@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 		_test_read_graph_from_file2();
 
 		_test_count_mutual_links1();
-		// _test_count_mutual_links2();
+		_test_count_mutual_links2();
 
 		printf("Function test complete.\n");
 	}

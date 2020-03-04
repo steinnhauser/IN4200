@@ -172,7 +172,12 @@ int count_mutual_links1(int N, char **table2D, int *num_involvements)
 	as well as the number of involvements per webpage as outbound for such
 	mutual linkage occurrences.*/
 
-	int total_links = 0;
+	/* Should return the total number of mutual webpage linkage occurences.
+	In addition, the array num_involvements is assumed to already be allocated
+	and of length N. Should contain the number of involvements per webpage
+	when the functions are complete. */
+
+	int j_links, total_links = 0;
 
 	/* To do this, first loop through all the pages that 4 is linked to. For each
 	of these, count how many other nodes are also linked to this one.
@@ -180,41 +185,40 @@ int count_mutual_links1(int N, char **table2D, int *num_involvements)
 	Doing this using the 2D matrix involves moving to column 4, starting from the
 	top and moving on down, and each time a 1 is encountered ('ToID links'), you
 	count how many other 1's are in that row ('FromID links' to the node). */
-
 	for (int j = 0; j < N; j++)
 	{
 		// j indicates the column. Move from left to right and top to bottom
+		j_links = 0;
 		for (int i = 0; i < N; i++)
 		{
 			// Check if any of these values equal 1.
 			// If so, we want to count up 1's in that row.
 			if (table2D[i][j] == 1)
 			{
+				// note in the num_involvements array that there is a value here.
 				for (int rowind = 0; rowind < N; rowind++)
 				{
 					if (table2D[i][rowind] == 1)
 					{
-						total_links++;
+						j_links++;
 					}
 				}
-				total_links--; // remove the link from column j.
+				j_links--; // remove the link addition from column j.
 			}
 		}
+		num_involvements[j] = j_links;
+		total_links += j_links;
 	}
-
-	/* Should return the total number of mutual webpage linkage occurences.
-	In addition, the array num_involvements is assumed to already be allocated
-	and of length N. Should contain the number of involvements per webpage
-	when the functions are complete. */
 	return total_links;
 } // count_mutual_links1
 
-int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements)
+int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num_involvements)
 {
 	/* Count the mutual links using the row_ptr and col_idx array */
 	int total_links = 0;
 
-	
+
+
 
 	return total_links;
 } // count_mutual_links2
