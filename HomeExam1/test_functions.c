@@ -166,6 +166,14 @@ void _test_count_mutual_links1()
 	and of length N. Should contain the number of involvements per webpage
 	when the functions are complete. */
   printf("Test count_mutual_links1 passed with \t %d errors.\n", errno);
+
+  // Finalize
+  free(num_involvements);
+  for (int i = 0; i < N; i++)
+  {
+    free(table2D[i]);
+  }
+  free(table2D);
 } // _test_count_mutual_links1
 
 void _test_count_mutual_links2()
@@ -185,7 +193,8 @@ void _test_count_mutual_links2()
   };
 
   int N = 8;
-  int num_involvements;
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
   int trueMtx[8][8] = {
     {0, 0, 0, 0, 0, 0, 1, 0},
     {1, 0, 1, 1, 0, 0, 0, 0},
@@ -198,8 +207,61 @@ void _test_count_mutual_links2()
   };
   int trueTotal_links = 26;
 
-
-  // int *num_involvements;  // know this value
   // count_mutual_links2(N, N_links, *row_ptr, *col_idx, num_involvements);
+
+  if (total_links != trueTotal_links)
+  {
+    errno++;
+  }
+
+  // Check the num_involvements values
+  for (int i = 0; i < N; i++)
+  {
+    if (correctVals[i][1] != num_involvements[i])
+    {
+      errno++;
+    }
+  }
+
   printf("Test count_mutual_links2 passed with \t %d errors.\n", errno);
 } // _test_count_mutual_links2
+
+void _test_OMP_count_mutual_links1()
+{
+  /* Function to test the function OMP_count_mutual_links1, which accomplishes
+  the same as the count_mutual_links1 function, only parallelized. */
+  int N = 8;
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
+  int trueMtx[8][8] = {
+    {0, 0, 0, 0, 0, 0, 1, 0},
+    {1, 0, 1, 1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, 0, 0, 1, 0},
+    {0, 0, 0, 1, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 1, 1, 0},
+  };
+  int trueTotal_links = 26;
+
+  char **table2D;
+  table2D = (int**) malloc(N * sizeof(int*));
+  for (int i = 0; i < N; i++)
+  {
+    table2D[i] = (int*) malloc(N * sizeof(int));
+    for (int j = 0; j < N; j++)
+    {
+      table2D[i][j] = trueMtx[i][j];
+    }
+  }
+
+  int a;
+  a = OMP_count_mutual_links1(N, table2D, num_involvements);
+  printf("GOT HERE\n");
+}
+void _test_OMP_count_mutual_links2()
+{
+  /* Function to test the function OMP_count_mutual_links2, which accomplishes
+  the same as the count_mutual_links2 function, only parallelized. */
+}

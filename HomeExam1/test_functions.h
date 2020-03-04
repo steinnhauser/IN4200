@@ -11,4 +11,7 @@ void _test_read_graph_from_file2();
 void _test_count_mutual_links1();
 void _test_count_mutual_links2();
 
+void _test_OMP_count_mutual_links1();
+void _test_OMP_count_mutual_links2();
+
 #endif  // TEST_FUNCTIONS_C

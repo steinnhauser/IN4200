@@ -88,12 +88,11 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
   read = getline(&line, &len, datafile);
 
   // read in the number of nodes and edges.
-  int edges;
-  fscanf(datafile, "# Nodes: %d Edges: %d\n", N, &edges);
+  fscanf(datafile, "# Nodes: %d Edges: %d\n", N, N_links);
 
   // Can now allocate the memory for the row_ptr and col_idx arrays.
   (*row_ptr) = (int*) malloc(((*N) + 1) * sizeof(int));
-  (*col_idx) = (int*) malloc(edges * sizeof(int));
+  (*col_idx) = (int*) malloc((*N_links) * sizeof(int));
 
 	if ((*row_ptr) == NULL || (*col_idx) == NULL)
 	{
@@ -109,8 +108,8 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
   int val1, val2, temp, ctr = 0;
   int* FromID;
   int* ToID;
-  FromID = (int*) malloc(edges * sizeof(int));
-  ToID = (int*) malloc(edges * sizeof(int));
+  FromID = (int*) malloc((*N_links) * sizeof(int));
+  ToID = (int*) malloc((*N_links) * sizeof(int));
 
 	// fill the row_ptr array with zeros to prepare for counting.
 	for (int i = 0; i < ((*N)+1); i++)
@@ -140,7 +139,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
   /* Apply a sorting algorithm to the FromID and ToID
 	arrays (according to the ToID values) to produce col_idx */
   ctr = 0;
-  while (ctr < (edges-1))
+  while (ctr < ((*N_links)-1))
   {
     if (ToID[ctr] > ToID[ctr + 1])
     {
@@ -160,7 +159,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
   }
 
 	// copy this sorted vector into the col_idx array and finalize
-	memcpy((*col_idx), FromID, edges * sizeof(int));
+	memcpy((*col_idx), FromID, (*N_links) * sizeof(int));
 	free(FromID);
 	free(ToID);
 	fclose(datafile);
@@ -219,6 +218,34 @@ int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num
 
 
 
-
 	return total_links;
 } // count_mutual_links2
+
+int OMP_count_mutual_links1(int N, char **table2D, int *num_involvements)
+{
+	/* Function which accomplishes the same objective as the count_mutual_links1
+	function, but using OpenMP (<omp.h> library) to parallelize the processes. */
+	int total_links = 0;
+	int my_id, numthreads;
+	#pragma omp parallel private(my_id)
+	{
+		my_id = omp_get_thread_num();
+		#pragma omp single
+		{
+			numthreads = omp_get_num_threads();
+		}
+		#pragma omp critical
+		{
+			printf("%d of %d speaking.\n", my_id, numthreads);
+		}
+	} // end of parallel region
+	return total_links;
+} // OMP_count_mutual_links1
+
+int OMP_count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements)
+{
+	/* Function which accomplishes the same objective as the count_mutual_links2
+	function, but using OpenMP (<omp.h> library) to parallelize the processes. */
+	int total_links = 0;
+	return total_links;
+} // OMP_count_mutual_links2
