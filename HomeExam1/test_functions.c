@@ -230,9 +230,26 @@ void _test_OMP_count_mutual_links1()
 {
   /* Function to test the function OMP_count_mutual_links1, which accomplishes
   the same as the count_mutual_links1 function, only parallelized. */
+  int errno = 0;
+  int total_links;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+
   int N = 8;
   int *num_involvements;
   num_involvements = (int*) malloc(N * sizeof(int));
+  for (int i = 0; i < N; i++)
+  {
+    num_involvements[i] = 0;
+  }
   int trueMtx[8][8] = {
     {0, 0, 0, 0, 0, 0, 1, 0},
     {1, 0, 1, 1, 0, 0, 0, 0},
@@ -256,9 +273,37 @@ void _test_OMP_count_mutual_links1()
     }
   }
 
-  int a;
-  a = OMP_count_mutual_links1(N, table2D, num_involvements);
-  printf("GOT HERE\n");
+  // Check that these links are equal.
+  total_links = OMP_count_mutual_links1(N, table2D, num_involvements);
+
+  // Check the total links value
+  if (total_links != trueTotal_links)
+  {
+    errno++;
+  }
+
+  // Check the num_involvements values
+  for (int i = 0; i < N; i++)
+  {
+    if (correctVals[i][1] != num_involvements[i])
+    {
+      errno++;
+    }
+  }
+
+	/* Should return the total number of mutual webpage linkage occurences.
+	In addition, the array num_involvements is assumed to already be allocated
+	and of length N. Should contain the number of involvements per webpage
+	when the functions are complete. */
+  printf("Test OMP_count_mutual_links1 passed with %d errors.\n", errno);
+
+  // Finalize
+  free(num_involvements);
+  for (int i = 0; i < N; i++)
+  {
+    free(table2D[i]);
+  }
+  free(table2D);
 }
 void _test_OMP_count_mutual_links2()
 {

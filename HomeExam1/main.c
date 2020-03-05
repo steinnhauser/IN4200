@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		if (pbool){
 			printf("Parallelizing...\n");
 			_test_OMP_count_mutual_links1();	// incomplete.
-			_test_OMP_count_mutual_links2();	// incomplete.
+			// _test_OMP_count_mutual_links2();	// incomplete.
 		}
 		printf("Function test complete.\n");
 	}

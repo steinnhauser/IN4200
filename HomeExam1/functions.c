@@ -217,7 +217,6 @@ int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num
 	int total_links = 0;
 
 
-
 	return total_links;
 } // count_mutual_links2
 
@@ -225,20 +224,32 @@ int OMP_count_mutual_links1(int N, char **table2D, int *num_involvements)
 {
 	/* Function which accomplishes the same objective as the count_mutual_links1
 	function, but using OpenMP (<omp.h> library) to parallelize the processes. */
-	int total_links = 0;
-	int my_id, numthreads;
-	#pragma omp parallel private(my_id)
+	int j_links, total_links = 0;
+	#pragma omp parallel for reduction(+:total_links, num_involvements[:N]) private(j_links)
+	for (int j = 0; j < N; j++)
 	{
-		my_id = omp_get_thread_num();
-		#pragma omp single
+		// j indicates the column. Move from left to right and top to bottom
+		j_links = 0;
+		for (int i = 0; i < N; i++)
 		{
-			numthreads = omp_get_num_threads();
+			// Check if any of these values equal 1.
+			// If so, we want to count up 1's in that row.
+			if (table2D[i][j] == 1)
+			{
+				// note in the num_involvements array that there is a value here.
+				for (int rowind = 0; rowind < N; rowind++)
+				{
+					if (table2D[i][rowind] == 1)
+					{
+						j_links++;
+					}
+				}
+				j_links--; // remove the link addition from column j.
+			}
 		}
-		#pragma omp critical
-		{
-			printf("%d of %d speaking.\n", my_id, numthreads);
-		}
-	} // end of parallel region
+		num_involvements[j] = j_links;
+		total_links += j_links;
+	}
 	return total_links;
 } // OMP_count_mutual_links1
 

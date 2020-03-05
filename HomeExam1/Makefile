@@ -16,7 +16,7 @@ HEADERS		:= $(wildcard *.h)
 
 
 %.o: %.c $(HEADERS)
-	$(CC) $(FLAGS) -fopenmp -c $< $@
+	$(CC) $(FLAGS) -Wall -fopenmp -c $< $@
 
 $(EXEC): $(OBJECTS)
 	@$(CC) $(OBJECTS) -fopenmp $(LIBS) -o $@
