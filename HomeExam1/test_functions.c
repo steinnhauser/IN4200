@@ -130,7 +130,7 @@ void _test_count_mutual_links1()
     {0, 0, 0, 0, 1, 0, 0, 1},
     {0, 0, 0, 0, 1, 1, 1, 0},
   };
-  int trueTotal_links = 26;
+  int trueTotal_links = 13;
 
   char **table2D;
   table2D = (int**) malloc(N * sizeof(int*));
@@ -195,6 +195,10 @@ void _test_count_mutual_links2()
   int N = 8;
   int *num_involvements;
   num_involvements = (int*) malloc(N * sizeof(int));
+  for (int j = 0; j < N; j++)
+	{
+		num_involvements[j] = 0;
+	}
   int trueMtx[8][8] = {
     {0, 0, 0, 0, 0, 0, 1, 0},
     {1, 0, 1, 1, 0, 0, 0, 0},
@@ -205,9 +209,16 @@ void _test_count_mutual_links2()
     {0, 0, 0, 0, 1, 0, 0, 1},
     {0, 0, 0, 0, 1, 1, 1, 0},
   };
-  int trueTotal_links = 26;
+  int trueTotal_links = 13;
 
-  // count_mutual_links2(N, N_links, *row_ptr, *col_idx, num_involvements);
+  char *filename;
+  int N_links;
+  int *row_ptr;
+  int *col_idx;
+
+  filename = "data/testingdata.txt";
+  read_graph_from_file2(filename, &N, &N_links, &row_ptr, &col_idx);
+  total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
 
   if (total_links != trueTotal_links)
   {
@@ -224,6 +235,10 @@ void _test_count_mutual_links2()
   }
 
   printf("Test count_mutual_links2 passed with \t %d errors.\n", errno);
+  // finalize
+  free(row_ptr);
+  free(col_idx);
+  free(num_involvements);
 } // _test_count_mutual_links2
 
 void _test_OMP_count_mutual_links1()
@@ -260,7 +275,7 @@ void _test_OMP_count_mutual_links1()
     {0, 0, 0, 0, 1, 0, 0, 1},
     {0, 0, 0, 0, 1, 1, 1, 0},
   };
-  int trueTotal_links = 26;
+  int trueTotal_links = 13;
 
   char **table2D;
   table2D = (int**) malloc(N * sizeof(int*));
@@ -309,4 +324,120 @@ void _test_OMP_count_mutual_links2()
 {
   /* Function to test the function OMP_count_mutual_links2, which accomplishes
   the same as the count_mutual_links2 function, only parallelized. */
+  // int N, int N_links, int *row_ptr, int *col_idx,int *num_involvements
+  int errno = 0;
+  int total_links;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+
+  int N = 8;
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
+  for (int j = 0; j < N; j++)
+	{
+		num_involvements[j] = 0;
+	}
+  int trueMtx[8][8] = {
+    {0, 0, 0, 0, 0, 0, 1, 0},
+    {1, 0, 1, 1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, 0, 0, 1, 0},
+    {0, 0, 0, 1, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 1, 1, 1, 0},
+  };
+  int trueTotal_links = 13;
+
+  char *filename;
+  int N_links;
+  int *row_ptr;
+  int *col_idx;
+
+  filename = "data/testingdata.txt";
+  read_graph_from_file2(filename, &N, &N_links, &row_ptr, &col_idx);
+  total_links = OMP_count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
+
+  if (total_links != trueTotal_links)
+  {
+    errno++;
+  }
+
+  // Check the num_involvements values
+  for (int i = 0; i < N; i++)
+  {
+    if (correctVals[i][1] != num_involvements[i])
+    {
+      errno++;
+    }
+  }
+
+  printf("Test OMP_count_mutual_links2 passed with %d errors.\n", errno);
+  // finalize
+  free(row_ptr);
+  free(col_idx);
+  free(num_involvements);
+}
+
+void _test_top_n_webpages()
+{
+  int errno = 0;
+  /* Function to test the function top_n_webpages */
+  int N = 8;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
+  for (int i = 0; i < N; i++)
+  {
+    num_involvements[i] = correctVals[i][1];
+  }
+
+  int n = 10;
+  top_n_webpages(num_involvements, n);
+
+  printf("Test top_n_webpages passed with \t %d errors.\n", errno);
+}
+
+void _test_OMP_top_n_webpages()
+{
+  int errno = 0;
+  /* Function to test the function OMP_top_n_webpages */
+  int N = 8;
+  int correctVals[8][2] = {
+    {0, 2},
+    {1, 0},
+    {2, 4},
+    {3, 6},
+    {4, 5},
+    {5, 2},
+    {6, 4},
+    {7, 3}
+  };
+  int *num_involvements;
+  num_involvements = (int*) malloc(N * sizeof(int));
+  for (int i = 0; i < N; i++)
+  {
+    num_involvements[i] = correctVals[i][1];
+  }
+
+  int n = 4;
+  OMP_top_n_webpages(num_involvements, n);
+  printf("Test OMP_top_n_webpages passed with \t %d errors.\n", errno);
 }

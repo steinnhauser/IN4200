@@ -14,4 +14,7 @@ void _test_count_mutual_links2();
 void _test_OMP_count_mutual_links1();
 void _test_OMP_count_mutual_links2();
 
+void _test_top_n_webpages();
+void _test_OMP_top_n_webpages();
+
 #endif  // TEST_FUNCTIONS_C

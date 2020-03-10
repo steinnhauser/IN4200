@@ -127,7 +127,13 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		FromID[ctr] = val1;
     ToID[ctr] = val2;
     ctr++;
+		if ((ctr % 100) == 0) {
+			printf("\rCounter: %d out of %d", ctr, (*N_links));
+			fflush(stdout);
+		}
   }
+	printf("\n");
+	printf("Done\n");
 
 	// Format this vector using convention (gradual addition)
 	(*row_ptr)[0] = 0;
@@ -152,11 +158,16 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
       FromID[ctr] = FromID[ctr + 1];
       FromID[ctr + 1] = temp;
 
-      ctr = 0;  // start from the beginning each time we sort
+      ctr--;  // start from the beginning each time we sort
     } else {
-      ctr++;
+			ctr++;
+			if ((ctr % 100) == 0) {
+				printf("\rCounter: %d out of %d", ctr, (*N_links));
+				fflush(stdout);
+			}
     }
   }
+	printf("\n");
 
 	// copy this sorted vector into the col_idx array and finalize
 	memcpy((*col_idx), FromID, (*N_links) * sizeof(int));
@@ -208,6 +219,8 @@ int count_mutual_links1(int N, char **table2D, int *num_involvements)
 		num_involvements[j] = j_links;
 		total_links += j_links;
 	}
+	// account for double counting the linkages (i.e. count both i->j and j->i).
+	total_links /= 2;
 	return total_links;
 } // count_mutual_links1
 
@@ -216,6 +229,27 @@ int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num
 	/* Count the mutual links using the row_ptr and col_idx array */
 	int total_links = 0;
 
+	// Know that row_ptr tells us how many elements are in each row.
+	// Know also that col_idx tells us where each of these elements are.
+	// Need to loop through each node (column), and assert how many more elements
+	// there are in each of the rows which contain a '1' for that column.
+
+	for (int i = 0; i < N; i++)
+	{
+		if ((row_ptr[i+1] - row_ptr[i]) > 1)
+		{
+			// If there are more than one elements in the current row, count up the
+			// mutual links for both columns where there is a linkage
+			for (int j = row_ptr[i]; j < row_ptr[i+1]; j++)
+			{
+				num_involvements[col_idx[j]] += (row_ptr[i+1] - row_ptr[i]) - 1;
+				total_links += (row_ptr[i+1] - row_ptr[i]) - 1;
+			}
+		}
+	}
+
+	// account for double counting the linkages (i.e. count both i->j and j->i).
+	total_links /= 2;
 
 	return total_links;
 } // count_mutual_links2
@@ -250,6 +284,8 @@ int OMP_count_mutual_links1(int N, char **table2D, int *num_involvements)
 		num_involvements[j] = j_links;
 		total_links += j_links;
 	}
+	// account for double counting the linkages (i.e. count both i->j and j->i).
+	total_links /= 2;
 	return total_links;
 } // OMP_count_mutual_links1
 
@@ -258,5 +294,36 @@ int OMP_count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx,int *
 	/* Function which accomplishes the same objective as the count_mutual_links2
 	function, but using OpenMP (<omp.h> library) to parallelize the processes. */
 	int total_links = 0;
+	#pragma omp parallel for reduction(+:total_links, num_involvements[:N])
+	for (int i = 0; i < N; i++)
+	{
+		if ((row_ptr[i+1] - row_ptr[i]) > 1)
+		{
+			// If there are more than one elements in the current row, count up the
+			// mutual links for both columns where there is a linkage
+			for (int j = row_ptr[i]; j < row_ptr[i+1]; j++)
+			{
+				num_involvements[col_idx[j]] += (row_ptr[i+1] - row_ptr[i]) - 1;
+				total_links += (row_ptr[i+1] - row_ptr[i]) - 1;
+			}
+		}
+	}
+
+	// account for double counting the linkages (i.e. count both i->j and j->i).
+	total_links /= 2;
+
 	return total_links;
 } // OMP_count_mutual_links2
+
+void top_n_webpages(int *num_involvements, int n)
+{
+	/* Function which finds the top n webpages with respect to the number of
+	involvements in mutual linkages, and prints these out with their
+	respective numbers of involvements. */
+
+}	// top_n_webpages
+
+void OMP_top_n_webpages(int *num_involvements, int n)
+{
+
+} // OMP_top_n_webpages
