@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "functions.c"
 
 int main(int argc, char *argv[])
@@ -13,6 +14,6 @@ int main(int argc, char *argv[])
     
     // Assert all the input arguments and parse them.
 	int total_links, tbool = 0, pbool = 0;
-	fun1c(argc, argv, &tbool, &pbool);
+	arg_parser(argc, argv, &tbool, &pbool);
     printf("Done\n");   
 }

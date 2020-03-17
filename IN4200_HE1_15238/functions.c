@@ -1,9 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
-void fun1c(int argc, char *argv[], int *tbool, int *pbool)
+void arg_parser(int argc, char *argv[], int *tbool, int *pbool)
 {
     int option; 
     while((option = getopt(argc, argv, "tp")) != -1)
