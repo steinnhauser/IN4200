@@ -6,6 +6,7 @@
 #include "functions.c"
 #include "read_graph_from_file1.c"
 #include "read_graph_from_file2.c"
+#include "count_mutual_links1.c"
 #include "testing_functions.c"
 
 int main(int argc, char *argv[])
@@ -20,13 +21,13 @@ int main(int argc, char *argv[])
 	
 	if (!tbool)
 	{
-		/* Perform the read_graph_from_file functions. Reading in the 
+		/* Perform the count_mutual_links functions. Reading in the 
 		web-NotreDame.txt data into a 2D array causes memory errors. 
 		The col_idx and row_ptr arrays will only be extracted. */
 	}
 	else {
-		printf("Testing the read_graph_from_file functions...\n");
-		test_Exercise1();
+		printf("Testing the count_mutual_links functions...\n");
+		test_Exercise2();
 	}
 
 	double endtime = ((double)(clock() - starttime))/CLOCKS_PER_SEC;

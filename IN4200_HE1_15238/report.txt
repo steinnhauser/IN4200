@@ -1,0 +1,11 @@
+
+Count_mutual_links1:
+
+To do this, first loop through all the pages that 4 is linked to. For each
+of these, count how many other nodes are also linked to this one. Doing this using the 2D matrix involves moving to column 4, starting from the
+top and moving on down, and each time a 1 is encountered ('ToID links'), you
+count how many other 1's are in that row ('FromID links' to the node).
+
+j indicates the column. Move from left to right and top to bottom
+Check if any of these values equal 1.
+If so, we want to count up 1's in that row.
