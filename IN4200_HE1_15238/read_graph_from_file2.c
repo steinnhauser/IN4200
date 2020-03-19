@@ -68,19 +68,23 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		(*row_ptr)[i] += (*row_ptr)[i-1];
 	}
 
-	// Finally, generate the col_idx array.
-	ctr = 0;
-	int pos = 0;
+	// Finally, generate the col_idx array. Add a verbosity factor for large data.
+	int pos = 0, verbosity = 0, fac = (*N)/150 + 1;
+
+	if ((*N)>1e3)
+	{
+		verbosity = 1;
+		printf("Extracting data...\n");
+	}
+	
+
     for (int i = 0; i < (*N); i++) {
-        if (ctr >= 1000) {
-			printf("\r");
-            printf("\r%.3f%%", 100 *i / (double) (*N));
+		// Create a progress bar for visualisation.
+		if (i % fac == 0 && verbosity)
+		{
+			printf("\r[%.3f %%]", 100*(i / (double) *N));
 			fflush(stdout);
-            ctr = 0;
-        }
-        else {
-            ctr++;
-        }
+		}
 
         for (int j = 0; j < (*N_links); j++) {
             if (ToID[j] == i) {
@@ -89,6 +93,10 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
             }
         }
     }
+	if (verbosity)
+	{
+		printf("\n");
+	}
 
 	// Finalize.
 	free(FromID);

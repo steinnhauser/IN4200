@@ -9,3 +9,11 @@ count how many other 1's are in that row ('FromID links' to the node).
 j indicates the column. Move from left to right and top to bottom
 Check if any of these values equal 1.
 If so, we want to count up 1's in that row.
+
+
+Count_mutual_links2:
+
+// Know that row_ptr tells us how many elements are in each row.
+// Know also that col_idx tells us where each of these elements are.
+// Need to loop through each node (column), and assert how many more elements
+// there are in each of the rows which contain a '1' for that column.
