@@ -44,8 +44,8 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	// Extract the parameters from the rest of the file.
 	int val1, val2, ctr = 0;
 	int *FromID, *ToID;
-	FromID = (int*) malloc((*N_links) * sizeof(int));
-	ToID = (int*) malloc((*N_links) * sizeof(int));
+	FromID 	= alloc_1d_zeros(*N_links);
+	ToID	= alloc_1d_zeros(*N_links);
 
 	while (fscanf(datafile, "%d\t%d\n", &val1, &val2) != EOF)
 	{
@@ -61,6 +61,21 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		}
 	}
 
+	// Reallocate the memory, disregarding the self-linkage terms
+	int *F_ID, *T_ID;
+	F_ID = (int*) malloc(ctr * sizeof(int));
+	T_ID = (int*) malloc(ctr * sizeof(int));
+
+	for (int i = 0; i < ctr; i++)
+	{
+		F_ID[i] = FromID[i];
+		T_ID[i] = ToID[i];
+	}
+
+	free(FromID);
+	free(ToID);
+	
+
 	// Format the row_ptr array using convention (gradual addition)
 	(*row_ptr)[0] = 0;
 	for (int i = 2; i < ((*N)+1); i++)
@@ -68,36 +83,48 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		(*row_ptr)[i] += (*row_ptr)[i-1];
 	}
 
-	// Finally, generate the col_idx array. Add a verbosity factor for large data.
-	int pos = 0, verbosity = 0, fac = (*N)/150 + 1;
-
-	if ((*N)>1e3)
+	int *prev_row_ids;
+	prev_row_ids = alloc_1d_zeros((*N));
+	
+	for (int i = 0; i < ctr; i++)
 	{
-		verbosity = 1;
-		printf("Compressing web data from file %s...\n", filename);
+		// Have values {FromID[i], ToID[i]}
+		(*col_idx)[(*row_ptr)[T_ID[i]] + prev_row_ids[T_ID[i]]] = F_ID[i];
+
+		// Counts how many places in the current row we've already counted.
+		prev_row_ids[T_ID[i]]++;
 	}
 	
 
-    for (int i = 0; i < (*N); i++) {
-		// Create a progress bar for visualisation.
-		if (i % fac == 0 && verbosity)
-		{
-			printf("\r[%.3f %%]", 100*(i / (double) *N));
-			fflush(stdout);
-		}
-
-        for (int j = 0; j < (*N_links); j++) {
-            if (ToID[j] == i) {
-                (*col_idx)[pos] = FromID[j];
-                pos++;
-            }
-        }
-    }
+	// Finally, generate the col_idx array. Add a verbosity factor for large data.
+	// int pos = 0, verbosity = 0, fac = (*N)/150 + 1;
 	
-	if (verbosity) printf("\n");
+	// if ((*N)>1e3)
+	// {
+	// 	verbosity = 1;
+	// 	printf("Compressing web data from file %s...\n", filename);
+	// }
+
+    // for (int i = 0; i < (*N); i++) {
+	// 	// Create a progress bar for visualisation.
+	// 	if (i % fac == 0 && verbosity)
+	// 	{
+	// 		printf("\r[%.3f %%]", 100*(i / (double) *N));
+	// 		fflush(stdout);
+	// 	}
+
+    //     for (int j = 0; j < (*N_links); j++) {
+    //         if (ToID[j] == i) {
+    //             (*col_idx)[pos] = FromID[j];
+    //             pos++;
+    //         }
+    //     }
+    // }
+
+	// if (verbosity) printf("\n");
 
 	// Finalize.
-	free(FromID);
-	free(ToID);
+	free(F_ID);
+	free(T_ID);
 	fclose(datafile);
 } // read_graph_from_file2
