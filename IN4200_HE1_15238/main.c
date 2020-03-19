@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	printf("Running file %s\n", argv[0]);
     
     // Assert all the input arguments and parse them.
-	int total_links, tbool = 0, pbool = 0;
+	int tbool = 0, pbool = 0;
 	arg_parser(argc, argv, &tbool, &pbool);
 	
 	if (!tbool)
@@ -39,12 +39,12 @@ int main(int argc, char *argv[])
 		{
 			// Use the OpenMP implementation of the count_mutual_links2 function.
 			total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
-			printf("Total links of file %s were found to be: %d", filename, total_links);
+			printf("Total links of file %s were found to be: %d\n", filename, total_links);
 		}
 		else {
 			// Use the regular implementation.
 			total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
-			printf("Total links of file %s were found to be: %d", filename, total_links);
+			printf("Total links of file %s were found to be: %d\n", filename, total_links);
 		}
 	}
 	else {

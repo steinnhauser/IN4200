@@ -74,7 +74,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	if ((*N)>1e3)
 	{
 		verbosity = 1;
-		printf("Extracting data...\n");
+		printf("Compressing web data from file %s...\n", filename);
 	}
 	
 
@@ -93,10 +93,8 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
             }
         }
     }
-	if (verbosity)
-	{
-		printf("\n");
-	}
+	
+	if (verbosity) printf("\n");
 
 	// Finalize.
 	free(FromID);
