@@ -4,7 +4,7 @@ int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num
     The number of linkages for each node are also saved in the num_involvements
     array, which is assumed to already be allocated. */
 
-	int total_links = 0;
+	int add, total_links = 0;
 
 	for (int i = 0; i < N; i++)
 	{
@@ -14,8 +14,9 @@ int count_mutual_links2(int N, int N_links, int *row_ptr, int *col_idx, int *num
             amount of mutual linkages found to all columns involved. */
 			for (int j = row_ptr[i]; j < row_ptr[i+1]; j++)
 			{
-				num_involvements[col_idx[j]] += (row_ptr[i+1] - row_ptr[i]) - 1;
-				total_links += (row_ptr[i+1] - row_ptr[i]) - 1;
+				add = (row_ptr[i+1] - row_ptr[i]) - 1;
+				num_involvements[col_idx[j]] += add;
+				total_links += add;
 			}
 		}
 	}

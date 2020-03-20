@@ -187,7 +187,7 @@ void test_Exercises_2_and_3()
 
     // Set num_involvements to zero and test the parallelized version
     num_involvements = alloc_1d_zeros(N);
-    omp_total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
+    omp_total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
 
     // Check the OMP implementation for errors.
     if (omp_total_links != trueTotal_links)
