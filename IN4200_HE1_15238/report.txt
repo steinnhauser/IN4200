@@ -17,3 +17,32 @@ Count_mutual_links2:
 // Know also that col_idx tells us where each of these elements are.
 // Need to loop through each node (column), and assert how many more elements
 // there are in each of the rows which contain a '1' for that column.
+
+
+
+// Finally, generate the col_idx array. Add a verbosity factor for large data.
+// int pos = 0, verbosity = 0, fac = (*N)/150 + 1;
+
+// if ((*N)>1e3)
+// {
+// 	verbosity = 1;
+// 	printf("Compressing web data from file %s...\n", filename);
+// }
+
+// for (int i = 0; i < (*N); i++) {
+// 	// Create a progress bar for visualisation.
+// 	if (i % fac == 0 && verbosity)
+// 	{
+// 		printf("\r[%.3f %%]", 100*(i / (double) *N));
+// 		fflush(stdout);
+// 	}
+
+//     for (int j = 0; j < (*N_links); j++) {
+//         if (ToID[j] == i) {
+//             (*col_idx)[pos] = FromID[j];
+//             pos++;
+//         }
+//     }
+// }
+
+// if (verbosity) printf("\n");

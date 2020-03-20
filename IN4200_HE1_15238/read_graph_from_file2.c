@@ -74,7 +74,6 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 
 	free(FromID);
 	free(ToID);
-	
 
 	// Format the row_ptr array using convention (gradual addition)
 	(*row_ptr)[0] = 0;
@@ -84,44 +83,15 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	}
 
 	int *prev_row_ids;
-	prev_row_ids = alloc_1d_zeros((*N));
+	prev_row_ids = alloc_1d_zeros(*N);
 	
 	for (int i = 0; i < ctr; i++)
 	{
-		// Have values {FromID[i], ToID[i]}
 		(*col_idx)[(*row_ptr)[T_ID[i]] + prev_row_ids[T_ID[i]]] = F_ID[i];
 
 		// Counts how many places in the current row we've already counted.
 		prev_row_ids[T_ID[i]]++;
 	}
-	
-
-	// Finally, generate the col_idx array. Add a verbosity factor for large data.
-	// int pos = 0, verbosity = 0, fac = (*N)/150 + 1;
-	
-	// if ((*N)>1e3)
-	// {
-	// 	verbosity = 1;
-	// 	printf("Compressing web data from file %s...\n", filename);
-	// }
-
-    // for (int i = 0; i < (*N); i++) {
-	// 	// Create a progress bar for visualisation.
-	// 	if (i % fac == 0 && verbosity)
-	// 	{
-	// 		printf("\r[%.3f %%]", 100*(i / (double) *N));
-	// 		fflush(stdout);
-	// 	}
-
-    //     for (int j = 0; j < (*N_links); j++) {
-    //         if (ToID[j] == i) {
-    //             (*col_idx)[pos] = FromID[j];
-    //             pos++;
-    //         }
-    //     }
-    // }
-
-	// if (verbosity) printf("\n");
 
 	// Finalize.
 	free(F_ID);
