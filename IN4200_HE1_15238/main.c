@@ -11,6 +11,8 @@
 #include "count_mutual_links2.c"
 #include "count_mutual_links_OpenMP1.c"
 #include "count_mutual_links_OpenMP2.c"
+#include "top_n_webpages.c"
+#include "top_n_webpages_OpenMP.c"
 #include "testing_functions.c"
 
 int main(int argc, char *argv[])
@@ -40,11 +42,13 @@ int main(int argc, char *argv[])
 			// Use the OpenMP implementation of the count_mutual_links2 function.
 			total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of file %s were found to be: %d\n", filename, total_links);
+
 		}
 		else {
 			// Use the regular implementation.
 			total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of file %s were found to be: %d\n", filename, total_links);
+			top_n_webpages(N, num_involvements, 8);
 		}
 	}
 	else {

@@ -205,6 +205,10 @@ void test_Exercises_2_and_3()
     printf("Test count_mutual_links2 passed with \t\t %d errors.\n", reg_errno);
     printf("Test count_mutual_links_OpenMP2 passed with \t %d errors.\n", omp_errno);
 
+
+    /* Test the top_n_webpages functions as well. */
+    top_n_webpages(N, num_involvements, 4);
+
     // Finalize
     free(num_involvements);
     free(row_ptr);
