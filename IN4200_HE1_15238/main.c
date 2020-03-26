@@ -15,6 +15,7 @@
 #include "top_n_webpages_OpenMP.c"
 #include "testing_functions.c"
 
+
 int main(int argc, char *argv[])
 {
 	srand(time(0));
@@ -23,13 +24,17 @@ int main(int argc, char *argv[])
     
     // Assert all the input arguments and parse them.
 	int tbool = 0, pbool = 0;
-	arg_parser(argc, argv, &tbool, &pbool);
+	char *filename;
+	arg_parser(argc, argv, &tbool, &pbool, &filename);
+
+	printf("Using data directory: %s\n", filename);
+
 	
 	if (!tbool)
 	{
 		/* Perform the analysis. Do this using CRS formatting
 		and an optional parallelisation flag [-p] at execution. */
-		char* filename = "data/web-NotreDame.txt";
+		// char* filename = "data/web-NotreDame.txt";
 		int N, N_links, total_links;
 		int *row_ptr, *col_idx, *num_involvements;
 		
@@ -42,21 +47,21 @@ int main(int argc, char *argv[])
 			// Use the OpenMP implementation of the count_mutual_links2 function.
 			total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of file %s were found to be: %d\n", filename, total_links);
-
+			top_n_webpages_OpenMP(N, num_involvements, 4);
 		}
 		else {
 			// Use the regular implementation.
 			total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of file %s were found to be: %d\n", filename, total_links);
-			top_n_webpages(N, num_involvements, 8);
+			top_n_webpages(N, num_involvements, 10);
 		}
 	}
 	else {
 		printf("Testing the implementations...\n");
-		printf("-------------------------------\n");
+		printf("===============================\n");
 		test_Exercise1();
-		test_Exercises_2_and_3();
-		printf("-------------------------------\n");
+		test_Exercises_2_3_4();
+		printf("===============================\n");
 	}
 
 	double endtime = ((double)(clock() - starttime))/CLOCKS_PER_SEC;

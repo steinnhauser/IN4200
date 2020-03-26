@@ -88,7 +88,7 @@ void test_Exercise1()
     printf("Test read_graph_from_file2 passed with \t\t %d errors.\n", errno);
 } // test_Exercise1
 
-void test_Exercises_2_and_3()
+void test_Exercises_2_3_4()
 {
     /* Function to assess the performances of the count_mutual_links1
     and count_mutual_links2 module implementations. The testing data
@@ -207,7 +207,21 @@ void test_Exercises_2_and_3()
 
 
     /* Test the top_n_webpages functions as well. */
-    top_n_webpages(N, num_involvements, 4);
+    top_n_webpages(N, num_involvements, 8);
+
+    /* Should output
+    -----------------
+    Top 8 webpages:
+    1.       Webpage no. 3  with 6 linkage(s).
+    2.       Webpage no. 4  with 5 linkage(s).
+    3.       Webpage no. 2  with 4 linkage(s).
+    4.       Webpage no. 6  with 4 linkage(s).
+    5.       Webpage no. 7  with 3 linkage(s).
+    6.       Webpage no. 0  with 2 linkage(s).
+    7.       Webpage no. 5  with 2 linkage(s).
+    8.       Webpage no. 1  with 0 linkage(s).
+    -----------------
+    */
 
     // Finalize
     free(num_involvements);
