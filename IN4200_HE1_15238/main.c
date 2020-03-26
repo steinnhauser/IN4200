@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 	printf("Running file %s\n", argv[0]);
     
     // Assert all the input arguments and parse them.
-	int tbool = 0, pbool = 0;
+	int tbool = 0, pbool = 0, dbool = 0;
 	char *filename;
-	arg_parser(argc, argv, &tbool, &pbool, &filename);
+	arg_parser(argc, argv, &tbool, &pbool, &dbool, &filename);
 
 	printf("Using data directory: %s\n", filename);
 
@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 	{
 		/* Perform the analysis. Do this using CRS formatting
 		and an optional parallelisation flag [-p] at execution. */
-		// char* filename = "data/web-NotreDame.txt";
 		int N, N_links, total_links;
 		int *row_ptr, *col_idx, *num_involvements;
 		
