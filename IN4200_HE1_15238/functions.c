@@ -40,16 +40,18 @@ void arg_parser(int argc, char *argv[], int *tbool, int *pbool, int *dbool, char
 		}
 	}
 
-    /* Count up the extra arguments. The arguments which are not flags are treated
-    as the filename for the data. Do not overwrite if the [-t] and [-d] flags are parsed. */
+    int fnameset = (!(*tbool) && !(*dbool));
+
+    /* The arguments which are not flags are treated as the filename for the data. 
+    Do not overwrite the filename either the [-t] or the [-d] flag is passed. */
     for(; optind < argc; optind++)
     {
-        if (!(*tbool) && !(*dbool)) {(*filename) = argv[optind];}
+        if (fnameset) {(*filename) = argv[optind];}
     } 
 
-    /* If more than one are passed raise an error. Exception is for
-     testing. Then we use the default filename 'data/testingdata.txt' */
-    if (((argc-flags) != 2) && (!(*tbool) && !(*dbool)))
+    /* If more than one non-flag additional argument is passed raise an error. 
+    Exception is for testing [-t] and if the default flag [-d] is passed. */
+    if (((argc-flags) != 2) && (fnameset))
     {
         printf("Syntax error: Expected one filename argument.\n");
         exit(EXIT_FAILURE);
