@@ -9,7 +9,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	if (datafile == NULL)
 	{
 		printf("Error in reading file %s.\n", filename);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	/* Can assume that the first two lines contain free text.
@@ -21,24 +21,23 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	ssize_t read;
 
 	// Read lines no. 1 & 2
-	read = getline(&line, &len, datafile);
-	read = getline(&line, &len, datafile);
+	read = getline(&line, &len, datafile); free(line); line = NULL;
+	read = getline(&line, &len, datafile); free(line); line = NULL;
 
 	// Read line no. 3
 	int opt = fscanf(datafile, "# Nodes: %d Edges: %d\n", N, N_links);
 
 	// Read line no. 4
-	read = getline(&line, &len, datafile);
+	read = getline(&line, &len, datafile); free(line); line = NULL;
 
 	/* Allocate the memory for the row_ptr and col_idx arrays.
 	Fill the row_ptr array with zeros to prepare for counting. */
 	(*row_ptr) = alloc_1d_zeros((*N) + 1);
-	(*col_idx) = (int*) malloc((*N_links) * sizeof(int));
 
-	if ((*row_ptr) == NULL || (*col_idx) == NULL)
+	if ((*row_ptr) == NULL)
 	{
-		printf("Error allocating row_ptr or col_idx memory.\n");
-		exit(1);
+		printf("Error allocating row_ptr memory.\n");
+		exit(EXIT_FAILURE);
 	}
 
 	// Extract the parameters from the rest of the file.
@@ -65,13 +64,10 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	int *F_ID, *T_ID;
 	F_ID = (int*) malloc(ctr * sizeof(int));
 	T_ID = (int*) malloc(ctr * sizeof(int));
-
-	for (int i = 0; i < ctr; i++)
-	{
+	for (int i = 0; i < ctr; i++){
 		F_ID[i] = FromID[i];
 		T_ID[i] = ToID[i];
 	}
-
 	free(FromID);
 	free(ToID);
 
@@ -82,9 +78,14 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		(*row_ptr)[i] += (*row_ptr)[i-1];
 	}
 
-	int *prev_row_ids;
-	prev_row_ids = alloc_1d_zeros(*N);
-	
+	int *prev_row_ids = alloc_1d_zeros(*N);
+	(*col_idx) = (int*) malloc(ctr * sizeof(int));
+	if ((*col_idx) == NULL)
+	{
+		printf("Error allocating col_idx memory.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	for (int i = 0; i < ctr; i++)
 	{
 		(*col_idx)[(*row_ptr)[T_ID[i]] + prev_row_ids[T_ID[i]]] = F_ID[i];
@@ -96,5 +97,6 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	// Finalize.
 	free(F_ID);
 	free(T_ID);
+	free(prev_row_ids);
 	fclose(datafile);
 } // read_graph_from_file2

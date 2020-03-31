@@ -17,6 +17,9 @@ void top_n_webpages_OpenMP(int num_webpages, int *num_involvements, int n)
 	}
 
 	int threads = omp_get_max_threads();	// number of nodes to parallelize.
+
+	threads = 1;
+
 	int frac = num_webpages/threads;		// the fraction of the array each node will analyze.
 	int remainder = num_webpages % threads;	// the remaining values which must also be accounted for.
 
@@ -26,14 +29,9 @@ void top_n_webpages_OpenMP(int num_webpages, int *num_involvements, int n)
 	val_list = (int*) malloc(threads * n * sizeof(int));
 	idx_list = (int*) malloc(threads * n * sizeof(int));
 
-	/* Node no. 1 finds the top n webpages of values [0, num_webpages/threads>.
-	 * Node no. 2 finds the top n webpages of values [(num_webpages/threads), 2*num_webpages/threads>
-	 * Node no. 3 finds the top n webpages of values [(2*num_webpages/threads), 3*num_webpages/threads>
-	 * Node no. 4 finds the top n webpages of values [(3*num_webpages/threads), 4*num_webpages/threads] */
-
 	int maxval, maxidx, mythread;
 	// Loop through the array n times, to find the maximum value of each iteration.
-    #pragma omp parallel
+    #pragma omp parallel num_threads(threads)
 	{
 		mythread = omp_get_thread_num();
 		for (int i = 0; i < n; i++)

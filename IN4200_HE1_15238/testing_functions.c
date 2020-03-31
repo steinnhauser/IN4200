@@ -43,6 +43,10 @@ void test_Exercise1()
     }
     printf("Test read_graph_from_file1 passed with \t\t %d errors.\n", errno);
 
+    // Finalize.
+    free((*table2D));
+    free(table2D);
+
     /* Now test the implementation of the read_graph_from_file2 function.
     Once again using the example data given in the exercise text, as the 
     col_idx and row_ptr arrays of this data are well defined as: */
@@ -86,6 +90,10 @@ void test_Exercise1()
         }
     }
     printf("Test read_graph_from_file2 passed with \t\t %d errors.\n", errno);
+    
+    // Finalize.
+    free(row_ptr);
+    free(col_idx);
 } // test_Exercise1
 
 void test_Exercises_2_3_4()
@@ -116,8 +124,7 @@ void test_Exercises_2_3_4()
     filename = "data/testingdata.txt";
     read_graph_from_file1(filename, &N, &table2D);
 
-    int *num_involvements;
-    num_involvements = alloc_1d_zeros(N);
+    int *num_involvements = alloc_1d_zeros(N);
 
     reg_total_links = count_mutual_links1(N, table2D, num_involvements);
 
@@ -135,6 +142,7 @@ void test_Exercises_2_3_4()
     }
 
     // Set the num_involvements array to zeros and generate the data using <omp.h>
+    free(num_involvements);
     num_involvements = alloc_1d_zeros(N);
     omp_total_links = count_mutual_links_OpenMP1(N, table2D, num_involvements);
 
@@ -156,8 +164,9 @@ void test_Exercises_2_3_4()
     printf("Test count_mutual_links_OpenMP1 passed with \t %d errors.\n", omp_errno);
 
     // Finalize
-    free(num_involvements);
+    free((*table2D));
     free(table2D);
+    free(num_involvements);
 
     /* Now test the implementation of count_mutual_links2. Use the same example 
     data, and extract the col_idx and row_ptr arrays using read_graph_from_file2.c.
@@ -186,6 +195,7 @@ void test_Exercises_2_3_4()
     }
 
     // Set num_involvements to zero and test the parallelized version
+    free(num_involvements);
     num_involvements = alloc_1d_zeros(N);
     omp_total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
 

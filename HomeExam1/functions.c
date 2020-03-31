@@ -19,20 +19,20 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 	Line 3 has the number of nodes and edges in the form:
 		# Nodes:	int1 Edges: 	int2
 	These need to be extracted. Line 4 doesn't need extraction. */
-  char* line = NULL;
-  size_t len = 0;
-  ssize_t read;
+	char* line = NULL;
+	size_t len = 0;
+	ssize_t read;
 
-  // read the first two lines.
-  read = getline(&line, &len, datafile);
-  read = getline(&line, &len, datafile);
+	// read the first two lines.
+	read = getline(&line, &len, datafile);
+	read = getline(&line, &len, datafile);
 
-  // read in the number of nodes and edges.
-  int edges;
-  fscanf(datafile, "# Nodes: %d Edges: %d\n", N, &edges);
+	// read in the number of nodes and edges.
+	int edges;
+	fscanf(datafile, "# Nodes: %d Edges: %d\n", N, &edges);
 
-  // read line four
-  read = getline(&line, &len, datafile);
+	// read line four
+	read = getline(&line, &len, datafile);
 
 	// Allocate a 2D table, using the pointer table 2D.
 	(*table2D) = (char**) malloc((*N) * sizeof(char*));
@@ -40,23 +40,23 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 	{
 		(*table2D)[i] = (char*) malloc((*N) * sizeof(char));
 
-    // fill this array with zeros
-    for (int j = 0; j < (*N); j++)
-    {
-      (*table2D)[i][j] = 0;
-    }
+		// fill this array with zeros
+		for (int j = 0; j < (*N); j++)
+		{
+		(*table2D)[i][j] = 0;
+		}
 	}
-  if ((*table2D) == NULL)
-  {
-    printf("Error in allocating memory.\n");
-  }
+	if ((*table2D) == NULL)
+	{
+		printf("Error in allocating memory.\n");
+	}
 
-  // read the rest of the values and add corresponding ones to the table2D array
-  int val1, val2;
-  while (fscanf(datafile, "%d\t%d\n", &val1, &val2) != EOF)
-  {
-    (*table2D)[val2][val1] = 1;
-  }
+	// read the rest of the values and add corresponding ones to the table2D array
+	int val1, val2;
+	while (fscanf(datafile, "%d\t%d\n", &val1, &val2) != EOF)
+	{
+		(*table2D)[val2][val1] = 1;
+	}
 	// finalize the function
 	fclose(datafile);
 } // read_graph_from_file1
@@ -66,7 +66,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	/* Same purpose as the first function, except that the CRS format is used.
 	In this function, you should avoid internally allocating/using a 2D table */
 
-  // Open the file for reading
+  	// Open the file for reading
 	FILE* datafile;
 	datafile = fopen(filename, "r");
 	if (datafile == NULL)
@@ -79,20 +79,20 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	Line 3 has the number of nodes and edges in the form:
 		# Nodes:	int1 Edges: 	int2
 	These need to be extracted. Line 4 doesn't need extraction. */
-  char* line = NULL;
-  size_t len = 0;
-  ssize_t read;
+	char* line = NULL;
+	size_t len = 0;
+	ssize_t read;
 
-  // read the first two lines.
-  read = getline(&line, &len, datafile);
-  read = getline(&line, &len, datafile);
+	// read the first two lines.
+	read = getline(&line, &len, datafile);
+	read = getline(&line, &len, datafile);
 
-  // read in the number of nodes and edges.
-  fscanf(datafile, "# Nodes: %d Edges: %d\n", N, N_links);
+	// read in the number of nodes and edges.
+	fscanf(datafile, "# Nodes: %d Edges: %d\n", N, N_links);
 
-  // Can now allocate the memory for the row_ptr and col_idx arrays.
-  (*row_ptr) = (int*) malloc(((*N) + 1) * sizeof(int));
-  (*col_idx) = (int*) malloc((*N_links) * sizeof(int));
+	// Can now allocate the memory for the row_ptr and col_idx arrays.
+	(*row_ptr) = (int*) malloc(((*N) + 1) * sizeof(int));
+	(*col_idx) = (int*) malloc((*N_links) * sizeof(int));
 
 	if ((*row_ptr) == NULL || (*col_idx) == NULL)
 	{
@@ -100,16 +100,16 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		exit(1);
 	}
 
-  // read line four
-  read = getline(&line, &len, datafile);
+	// read line four
+	read = getline(&line, &len, datafile);
 
-  /* Extract the parameters from the rest of the file,
-  and use them to build the row_ptr and col_idx arrays. */
-  int val1, val2, temp, ctr = 0;
-  int* FromID;
-  int* ToID;
-  FromID = (int*) malloc((*N_links) * sizeof(int));
-  ToID = (int*) malloc((*N_links) * sizeof(int));
+	/* Extract the parameters from the rest of the file,
+	and use them to build the row_ptr and col_idx arrays. */
+	int val1, val2, temp, ctr = 0;
+	int* FromID;
+	int* ToID;
+	FromID = (int*) malloc((*N_links) * sizeof(int));
+	ToID = (int*) malloc((*N_links) * sizeof(int));
 
 	// fill the row_ptr array with zeros to prepare for counting.
 	for (int i = 0; i < ((*N)+1); i++)
@@ -118,22 +118,16 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	}
 
 	// scan through the rest of the file.
-  while (fscanf(datafile, "%d\t%d\n", &val1, &val2) != EOF)
-  {
+	while (fscanf(datafile, "%d\t%d\n", &val1, &val2) != EOF)
+	{
 		/* count how many occurrences of each ToID value there are,
 		following the convention of row_ptr[0]=0 */
 		(*row_ptr)[val2+1]++;
 
 		FromID[ctr] = val1;
-    ToID[ctr] = val2;
-    ctr++;
-		if ((ctr % 100) == 0) {
-			printf("\rCounter: %d out of %d", ctr, (*N_links));
-			fflush(stdout);
-		}
-  }
-	printf("\n");
-	printf("Done\n");
+		ToID[ctr] = val2;
+		ctr++;
+	}
 
 	// Format this vector using convention (gradual addition)
 	(*row_ptr)[0] = 0;
@@ -142,35 +136,54 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		(*row_ptr)[i] += (*row_ptr)[i-1];
 	}
 
-  /* Apply a sorting algorithm to the FromID and ToID
-	arrays (according to the ToID values) to produce col_idx */
-  ctr = 0;
-  while (ctr < ((*N_links)-1))
-  {
-    if (ToID[ctr] > ToID[ctr + 1])
-    {
-			// If a value is found to be unsorted, swap it with its neighbor
-      temp = ToID[ctr];
-      ToID[ctr] = ToID[ctr + 1];
-      ToID[ctr + 1] = temp;
+	/* Apply a sorting algorithm to the FromID and ToID
+		arrays (according to the ToID values) to produce col_idx */
+	ctr = 0;
+	// while (ctr < ((*N_links)-1))
+	// {
+	// 	if (ToID[ctr] > ToID[ctr + 1])
+	// 	{
+	// 	// If a value is found to be unsorted, swap it with its neighbor
+	// 	temp = ToID[ctr];
+	// 	ToID[ctr] = ToID[ctr + 1];
+	// 	ToID[ctr + 1] = temp;
 
-      temp = FromID[ctr];
-      FromID[ctr] = FromID[ctr + 1];
-      FromID[ctr + 1] = temp;
+	// 	temp = FromID[ctr];
+	// 	FromID[ctr] = FromID[ctr + 1];
+	// 	FromID[ctr + 1] = temp;
 
-      ctr--;  // start from the beginning each time we sort
-    } else {
-			ctr++;
-			if ((ctr % 100) == 0) {
-				printf("\rCounter: %d out of %d", ctr, (*N_links));
-				fflush(stdout);
-			}
+	// 	ctr--;  // start from the beginning each time we sort
+	// 	} else {
+	// 		ctr++;
+	// 		if ((ctr % 100) == 0) {
+	// 			printf("\rCounter: %d out of %d", ctr, (*N_links));
+	// 			fflush(stdout);
+	// 		}
+	// 	}
+	// }
+	// printf("\n");
+	int pos = 0;
+    int counter = 0;
+    for (int i = 0; i < *N; i++) {
+        if (counter >= 1000) {
+            printf("%.3f%%\n", 100 *i / (double) *N);
+            counter = 0;
+        }
+        else {
+            counter++;
+        }
+
+        for (int j = 0; j < *N_links; j++) {
+            if (ToID[j] == i) {
+                (*col_idx)[pos] = FromID[j];
+                pos++;
+            }
+        }
     }
-  }
-	printf("\n");
+
 
 	// copy this sorted vector into the col_idx array and finalize
-	memcpy((*col_idx), FromID, (*N_links) * sizeof(int));
+	// memcpy((*col_idx), FromID, (*N_links) * sizeof(int));
 	free(FromID);
 	free(ToID);
 	fclose(datafile);
@@ -320,7 +333,18 @@ void top_n_webpages(int *num_involvements, int n)
 	/* Function which finds the top n webpages with respect to the number of
 	involvements in mutual linkages, and prints these out with their
 	respective numbers of involvements. */
-
+	char* list;
+	list = (char*) malloc(n * sizeof(char));
+	
+	// Index to save where the maximal value is
+	int ctr = 0, val = 0, idx = 0;
+	
+	// Loop through and extract the top n maximum values of the num_involvements list.
+	// while (num_involvements[ctr] != EOF)
+	// {
+	// 	...
+	// 	ctr++;
+	// }
 }	// top_n_webpages
 
 void OMP_top_n_webpages(int *num_involvements, int n)

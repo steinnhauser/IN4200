@@ -46,7 +46,7 @@ void _test_read_graph_from_file1()
 
 void _test_read_graph_from_file2()
 {
-  /* Function to test the module read_graph_from_file1
+  /* Function to test the module read_graph_from_file2
   using the example given in the exercise paper. */
 
   // Know the true values to be:
@@ -417,7 +417,6 @@ void _test_top_n_webpages()
 
 void _test_OMP_top_n_webpages()
 {
-  int errno = 0;
   /* Function to test the function OMP_top_n_webpages */
   int N = 8;
   int correctVals[8][2] = {
@@ -439,5 +438,4 @@ void _test_OMP_top_n_webpages()
 
   int n = 4;
   OMP_top_n_webpages(num_involvements, n);
-  printf("Test OMP_top_n_webpages passed with \t %d errors.\n", errno);
 }

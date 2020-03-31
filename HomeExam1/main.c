@@ -76,12 +76,13 @@ int main(int argc, char *argv[])
 			int *num_involvements;
 			num_involvements = (int*) malloc(N*sizeof(int));
 			for (int i = 0; i < N; i++)
-		  {
-		    num_involvements[i] = 0;
-		  }
+			{
+				num_involvements[i] = 0;
+			}
 			total_links = OMP_count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of %s: %d\n", filename, total_links);
-		}	else {
+		} 
+		else {
 			// Run the main calculations without parallelization
 			/* Read a web graph from file */
 			int N, N_links, total_links;
@@ -94,9 +95,9 @@ int main(int argc, char *argv[])
 			int *num_involvements;
 			num_involvements = (int*) malloc(N*sizeof(int));
 			for (int i = 0; i < N; i++)
-		  {
-		    num_involvements[i] = 0;
-		  }
+			{
+				num_involvements[i] = 0;
+			}
 			total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
 			printf("Total links of %s: %d\n", filename, total_links);
 		}

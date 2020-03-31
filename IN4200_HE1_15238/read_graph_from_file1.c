@@ -23,15 +23,15 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
     ssize_t read;
 
     // Lines no. 1 & 2
-    read = getline(&line, &len, datafile);
-    read = getline(&line, &len, datafile);
+    read = getline(&line, &len, datafile); free(line); line = NULL;
+    read = getline(&line, &len, datafile); free(line); line = NULL;
 
     // Line no. 3
     int edges, opt;
     opt = fscanf(datafile, "# Nodes: %d Edges: %d\n", N, &edges);
 
     // Line no. 4
-    read = getline(&line, &len, datafile);
+    read = getline(&line, &len, datafile); free(line); line = NULL;
 
 	// Allocate a 2D table, and fill it with zeros
 	(*table2D) = alloc_2d_zeros((*N));
@@ -50,4 +50,5 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
 	// Finalize.
 	fclose(datafile);
+    free(line);
 } // read_graph_from_file1

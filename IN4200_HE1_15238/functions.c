@@ -8,7 +8,7 @@ void arg_parser(int argc, char *argv[], int *tbool, int *pbool, int *dbool, char
     
     The function also takes in a filename argument. An error is raised if there is 
     more than one, and the filename argument is ignored if testing is initiated. */
-    int option, optind, flags = 0;
+    int option, optind=0, flags = 0;
 
     if (argc == 1)
     {
@@ -61,8 +61,11 @@ void arg_parser(int argc, char *argv[], int *tbool, int *pbool, int *dbool, char
 int* alloc_1d_zeros(int N)
 {
     int* array = (int*) malloc(N * sizeof(int));
-    for (int i = 0; i < N; i++)
-    {
+    if (array == NULL) {
+        printf("Error in allocating memory.\n");
+    }
+
+    for (int i = 0; i < N; i++) {
         array[i] = 0;
     }
     return array;
