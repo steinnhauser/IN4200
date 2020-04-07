@@ -34,12 +34,6 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	Fill the row_ptr array with zeros to prepare for counting. */
 	(*row_ptr) = alloc_1d_zeros((*N) + 1);
 
-	if ((*row_ptr) == NULL)
-	{
-		printf("Error allocating row_ptr memory.\n");
-		exit(EXIT_FAILURE);
-	}
-
 	// Extract the parameters from the rest of the file.
 	int val1, val2, ctr = 0;
 	int *FromID, *ToID;
@@ -51,8 +45,8 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		/* Save all the values of the file into the arrays FromID 
 		and ToID. Also count how many occurrences of each ToID values 
 		there are, following the convention of row_ptr[0] = 0. */
-		if (val1 != val2) {
-			// Avoid counting self-linkages
+		if ((val1 != val2) && ((val1 < (*N)) && (val2 < (*N)))) {
+			// Avoid counting self-linkages and dead-links
 			(*row_ptr)[val2+1]++;
 			FromID[ctr] = val1;
 			ToID[ctr] = val2;
@@ -60,7 +54,7 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 		}
 	}
 
-	// Reallocate the memory, disregarding the self-linkage terms
+	// Reallocate the memory, disregarding the self-linkage and dead-links
 	int *F_ID, *T_ID;
 	F_ID = (int*) malloc(ctr * sizeof(int));
 	T_ID = (int*) malloc(ctr * sizeof(int));
@@ -75,16 +69,11 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 	(*row_ptr)[0] = 0;
 	for (int i = 2; i < ((*N)+1); i++)
 	{
-		(*row_ptr)[i] += (*row_ptr)[i-1];
+		(*row_ptr)[i] 	+= (*row_ptr)[i-1];
 	}
 
+	(*col_idx) = alloc_1d_zeros(ctr);
 	int *prev_row_ids = alloc_1d_zeros(*N);
-	(*col_idx) = (int*) malloc(ctr * sizeof(int));
-	if ((*col_idx) == NULL)
-	{
-		printf("Error allocating col_idx memory.\n");
-		exit(EXIT_FAILURE);
-	}
 
 	for (int i = 0; i < ctr; i++)
 	{

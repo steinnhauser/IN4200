@@ -28,57 +28,48 @@ int main(int argc, char *argv[])
 
 	printf("Using data directory: %s\n", filename);
 
-	double tarr[100];
-	for (int i = 0; i < 100; i++) {
-		srand(time(0));
-		clock_t starttime = clock();
+	srand(time(0));
+	clock_t starttime = clock();
+	
+	if (!tbool)
+	{
+		/* Perform the analysis. Do this using CRS formatting
+		and an optional parallelisation flag [-p] at execution. */
+		int N, N_links, total_links;
+		int *row_ptr, *col_idx, *num_involvements;
 		
-		if (!tbool)
+		read_graph_from_file2(filename, &N, &N_links, &row_ptr, &col_idx);
+		num_involvements = alloc_1d_zeros(N);
+		
+		if (pbool)
 		{
-			/* Perform the analysis. Do this using CRS formatting
-			and an optional parallelisation flag [-p] at execution. */
-			int N, N_links, total_links;
-			int *row_ptr, *col_idx, *num_involvements;
-			
-			read_graph_from_file2(filename, &N, &N_links, &row_ptr, &col_idx);
-			num_involvements = alloc_1d_zeros(N);
-			
-			if (pbool)
-			{
-				// Use the OpenMP implementation of the count_mutual_links2 function.
-				total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
-				printf("Total links of file %s were found to be: %d\n", filename, total_links);
-				top_n_webpages_OpenMP(N, num_involvements, 100);
-			}
-			else {
-				// Use the regular implementation.
-				total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
-				printf("Total links of file %s were found to be: %d\n", filename, total_links);
-				top_n_webpages(N, num_involvements, 100);
-			}
-			
-			// Finalize the program
-			free(num_involvements);
-			free(row_ptr);
-			free(col_idx);
+			// Use the OpenMP implementation of the count_mutual_links2 function.
+			total_links = count_mutual_links_OpenMP2(N, N_links, row_ptr, col_idx, num_involvements);
+			printf("Total links of file %s were found to be: %d\n", filename, total_links);
+			top_n_webpages_OpenMP(N, num_involvements, 6);
 		}
 		else {
-			printf("Testing the implementations...\n");
-			printf("===============================\n");
-			test_Exercise1();
-			test_Exercises_2_3_4();
-			printf("===============================\n");
+			// Use the regular implementation.
+			total_links = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
+			printf("Total links of file %s were found to be: %d\n", filename, total_links);
+			top_n_webpages(N, num_involvements, 6);
 		}
-
-		double endtime = ((double)(clock() - starttime))/CLOCKS_PER_SEC;
-		printf("Completed after %.3f seconds.\n", endtime);
-		tarr[i] = endtime;
+		
+		// Finalize the program
+		free(num_involvements);
+		free(row_ptr);
+		free(col_idx);
+	}
+	else {
+		printf("Testing the implementations...\n");
+		printf("===============================\n");
+		test_Exercise1();
+		test_Exercises_2_3_4();
+		printf("===============================\n");
 	}
 
-	for (int i = 0; i < 100; i++){
-		printf("%.3f, ", tarr[i]);
-	}
-	printf("\n");
+	double endtime = ((double)(clock() - starttime))/CLOCKS_PER_SEC;
+	printf("Completed after %.3f seconds.\n", endtime);
 
 	return 0;
 }
