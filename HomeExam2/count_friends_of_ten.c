@@ -1,6 +1,6 @@
 int count_friends_of_ten(int M, int N, int** v)
 {
-    int no = 0, cval;
+    int no = 0;
 
     /*  Have four potential values. First, the horizontal (1), second,
      *  the vertical (2), and the top-left to bottom right diagonal (3)

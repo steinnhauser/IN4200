@@ -14,6 +14,4 @@ void get_mtx(int ***v)
             (*v)[i][j] = matrix[i][j];
         }
     }
-
-
 }
