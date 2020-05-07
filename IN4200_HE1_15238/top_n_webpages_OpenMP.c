@@ -17,9 +17,6 @@ void top_n_webpages_OpenMP(int num_webpages, int *num_involvements, int n)
 	}
 
 	int threads = omp_get_max_threads();	// number of nodes to parallelize.
-
-	threads = 1;
-
 	int frac = num_webpages/threads;		// the fraction of the array each node will analyze.
 	int remainder = num_webpages % threads;	// the remaining values which must also be accounted for.
 

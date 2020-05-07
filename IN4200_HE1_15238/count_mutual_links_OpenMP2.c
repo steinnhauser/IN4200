@@ -3,7 +3,7 @@ int count_mutual_links_OpenMP2(int N, int N_links, int *row_ptr, int *col_idx,in
 	/* Function which accomplishes the same objective as the count_mutual_links2
 	function, but using OpenMP (<omp.h> library) to parallelize the processes. */
 	int add, total_links = 0;
-	#pragma omp parallel for reduction(+:total_links, num_involvements[:N]) num_threads(1)
+	#pragma omp parallel for reduction(+:total_links, num_involvements[:N])
 	for (int i = 0; i < N; i++)
 	{
 		if ((row_ptr[i+1] - row_ptr[i]) > 1)
