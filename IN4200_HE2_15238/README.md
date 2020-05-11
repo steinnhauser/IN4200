@@ -13,13 +13,13 @@ followed by:
 To compile the parallel program, run the command:
 
 ```
-gcc mpi_main.c -o test.x -fopenmp -O3
+mpicc -O3 -Wall -std=c11 mpi_main.c
 ```
 
 followed by:
 
 ```
-./test.x
+mpiexec -np 4 ./a.out
 ```
 
 

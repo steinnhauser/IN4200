@@ -3,47 +3,48 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <omp.h>
+#include "mpi.h"
 
-#include "mpi_count_friends_of_ten.c"
 #include "functions.c"
+#include "mpi_count_friends_of_ten.c"
 
 int main(int argc, char *argv[])
 {
-    printf("Running file %s\n", argv[0]);
+    /* Building upon the sketch given in the exercise text to find
+     * the 'friends of ten' for an (M x N) matrix using MPI. */
 
-    /* Initialize the array v and values M, N.
-     * Allocate memory and set values for M rows and N columns.
-     * Save the array in the row-major storage order. */
+    int M=0, N=0, rank, num_triple_friends;
+    int **v=NULL;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if (rank==0) {
+        // decide the values for M and N
+        // allocate 2D array v and assign it with suitable values
 
-    int M = 7, N = 9;
-    int *A = (int*) malloc(M * N * sizeof(int*));
-    int **v = (int**) malloc(M * sizeof(int*));
-    if (v == NULL || A == NULL)
-    {
-        printf("Error in allocating memory.\n");
+        // =====================================================================
+        M = 100, N = 200;
+        v = getMtx(M, N);
+
+        /* Fill the matrix with values. See to the functions.c file for example 
+         * matrices to fill up. get_mtx1 requires M = 4, N = 5, and fills the 
+         * matrix up with the values from the example text. getRandomMtx fills 
+         * the matrix up with pseudo-random numbers. No M or N requirements. */
+        // getRandomMtx(M, N, &v);
+        getRandomMtx(M, N, &v);
+        // =====================================================================
     }
-
-    for (int i = 0; i < M; i++)
-    {
-        v[i] = &(A[i * N]);
-        // fill this array with zeros
-        for (int j = 0; j < M; j++)
-        {
-            v[i][j] = 0;
-        }
-    }
-
-    /* Fill the matrix with values. See to the functions.c file for example matrices to fill up.
-     * get_mtx1 requires M = 4, N = 5, and fills the matrix up with the values from the example text.
-     * get_mtx4 fills the matrix up with pseudo-random numbers. No M or N requirements. */
-    get_mtx4(M, N, &v);
     
-    // Call the count friends of ten MPI function
-    int no = MPI_count_friends_of_ten(M, N, v);
-    printf("=======================================================\n");
-    printf("Total number of triple-friends of 10 was found to be %d\n", no);
-    printf("=======================================================\n");
+    num_triple_friends = MPI_count_friends_of_ten(M, N, v);
+    printf("MPI rank <%d>: number of triple friends=%d\n", rank, num_triple_friends);
+    
+    if (rank == 0) {
+        // deallocation of 2D array v
+        free(v[0]);
+        free(v);
 
+        printf("Total number of triple friends was found to be: %d\n", num_triple_friends);
+    }
+
+    MPI_Finalize();    
     return 0;
 }

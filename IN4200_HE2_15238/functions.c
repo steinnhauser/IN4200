@@ -1,4 +1,25 @@
-/* Miscellaneous functions to fill the 2d matrix with various settings. */
+/* Miscellaneous functions. Many of which fill the 2d matrix with various settings. */
+
+int **getMtx(int M, int N) {
+    // Allocates a (M x N) matrix and fills it with zeros.
+    int *A = (int*) malloc(M * N * sizeof(int*));
+    int **v = (int**) malloc(M * sizeof(int*));
+    if (v == NULL || A == NULL)
+    {
+        printf("Error in allocating memory.\n");
+    }
+
+    for (int i = 0; i < M; i++)
+    {
+        v[i] = &(A[i * N]);
+        // fill this array with zeros
+        // for (int j = 0; j < M; j++)
+        // {
+        //     v[i][j] = 0;
+        // }
+    }
+    return v;
+}
 
 void get_mtx1(int M, int N, int ***v)
 {
@@ -73,18 +94,16 @@ void get_mtx3(int M, int N, int ***v)
     }
 }
 
-void get_mtx4(int M, int N, int ***v)
+void getRandomMtx(int M, int N, int ***v)
 {
     /* Matrix with many pseudo-random values. M=8 and N=11 required. */
-    int val, num = 0;   // treat the num initial value as the seed.
+    srand(time(0));  // Set seed to be time dependent
     for (int i = 0; i < M; i++)
     {
         for (int j = 0; j < N; j++)
         {
-            // Generate some (not-so-) pseudo-random numbers from 1 to 9.
-            num = ((j + 4) * (i+1) + (j+1) * (num+1) * num * (i + 2) + 3 * i + 4 * j + 9) % 256;
-            val = num % 9 + 1;
-            (*v)[i][j] = val;
+            // Generate some pseudo-random numbers from 0 to 9.
+            (*v)[i][j] = rand()%9;
         }
     }
 }
